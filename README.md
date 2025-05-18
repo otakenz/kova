@@ -7,21 +7,14 @@ helping you avoid overcommitment and improve your productivity through continuou
 
 ## Key Features:
 
-### Ticket-based task management: Create and organize tasks with time estimates before starting work.
-
-### Real-time progress tracking: Monitor how much time is left on each active ticket with a visual countdown.
-
-### Personalized dashboard: Gain insights into your productivity trends and ability to estimate time accurately.
-
-### Multi-project support: Manage tasks across different projects for clear context and focus.
-
-### Self-hosted backend: A REST API service written in Go, exposing all core features for flexible frontends.
-
-### Multiple frontends: Use a terminal TUI, CLI, or browser UI to interact with your tasks anytime, anywhere.
-
-### Concurrency-aware backend: Efficiently handle simultaneous users and data updates using Go’s concurrency primitives.
-
-### Lightweight and extensible: Designed for easy deployment on your personal machine or home server.
+- 📝 **Ticket-based task management**: Create and organize tasks with time estimates before starting work.
+- ⏳ **Real-time progress tracking**: Monitor how much time is left on each active ticket with a visual countdown.
+- 📊 **Personalized dashboard**: Gain insights into your productivity trends and ability to estimate time accurately.
+- 📁 **Multi-project support**: Manage tasks across different projects for clear context and focus.
+- 🐹 **Self-hosted backend**: A REST API service written in Go, exposing all core features for flexible frontends.
+- 💻 **Multiple frontends**: Use a terminal TUI, CLI, or browser UI to interact with your tasks anytime, anywhere.
+- ⚙️**Concurrency-aware backend**: Efficiently handle simultaneous users and data updates using Go’s concurrency primitives.
+- 🚀 **Lightweight and extensible**: Designed for easy deployment on your personal machine or home server.
 
 ## Why Kova?
 
