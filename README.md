@@ -18,6 +18,6 @@ helping you avoid overcommitment and improve your productivity through continuou
 
 ## Why Kova?
 
-Inspired by the Japanese word "Kōjō" which means “improvement,” “progress,” or “advancement".
+Inspired by the Japanese word 向上 "Kōjō" which means “improvement,” “progress,” or “advancement".
 Kova helps you work smarter — focusing on what you can realistically commit to, minimizing stress,
 and maximizing consistent progress.
