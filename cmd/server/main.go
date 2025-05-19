@@ -10,22 +10,24 @@ import (
 	"time"
 
 	"github.com/otakenz/kova/api"
-	"github.com/otakenz/kova/internal/core/task"
+	"github.com/otakenz/kova/internal/app"
 	"github.com/otakenz/kova/internal/infra/db"
 )
 
 func main() {
-	db, err := db.New("kova.db")
+	DB, err := db.New("kova.db")
 	if err != nil {
 		log.Fatal("failed to open DB:", err)
 	}
 
-	taskStore := task.NewStore(db)
-	if err := taskStore.Init(); err != nil {
+	ctx := context.Background()
+	taskRepo := db.NewTaskRepo(DB)
+	if err := taskRepo.Init(ctx); err != nil {
 		log.Fatal("failed to init task store:", err)
 	}
 
-	router := api.NewRouter(taskStore)
+	taskService := app.NewTaskService(taskRepo)
+	router := api.NewRouter(taskService)
 
 	srv := &http.Server{
 		Addr:         ":8080",

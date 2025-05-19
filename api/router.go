@@ -5,12 +5,12 @@ import (
 
 	"github.com/otakenz/kova/api/middleware"
 	v1 "github.com/otakenz/kova/api/v1"
-	"github.com/otakenz/kova/internal/core/task"
+	"github.com/otakenz/kova/internal/app"
 
 	"github.com/go-chi/chi/v5"
 )
 
-func NewRouter(taskStore *task.Store) http.Handler {
+func NewRouter(taskService *app.TaskService) http.Handler {
 	r := chi.NewRouter()
 
 	// Global middleware
@@ -20,7 +20,7 @@ func NewRouter(taskStore *task.Store) http.Handler {
 
 	// Mount versioned API
 	r.Route("/api", func(r chi.Router) {
-		r.Mount("/v1", v1.Routes(taskStore))
+		r.Mount("/v1", v1.Routes(taskService))
 	})
 
 	return r

@@ -4,13 +4,13 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/otakenz/kova/internal/core/task"
+	"github.com/otakenz/kova/internal/app"
 )
 
-func Routes(taskStore *task.Store) http.Handler {
+func Routes(taskService *app.TaskService) http.Handler {
 	r := chi.NewRouter()
 	registerPingRoute(r)
-	registerTaskRoutes(r, taskStore)
+	registerTaskRoutes(r, taskService)
 	return r
 }
 
@@ -22,8 +22,8 @@ func registerPingRoute(r chi.Router) {
 	})
 }
 
-func registerTaskRoutes(r chi.Router, taskStore *task.Store) {
-	taskHandler := NewTaskHandler(taskStore)
+func registerTaskRoutes(r chi.Router, taskService *app.TaskService) {
+	taskHandler := NewTaskHandler(taskService)
 	// Group task-related endpoints under "/tasks".
 	// POST "/"  -> Create a new task
 	// GET  "/"  -> List all tasks

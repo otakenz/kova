@@ -26,6 +26,9 @@
   - [ ] Validate state transitions
   - [ ] Calculate remaining time
   - [ ] Detect overdue tasks
+- [ ] Others:
+  - [ ] Implement Repository to abstract actual database impl
+  - [ ] Implement Service to encapsulate business logic, simplify TaskHandler
 
 ---
 

@@ -5,51 +5,55 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/otakenz/kova/internal/app"
 	"github.com/otakenz/kova/internal/core/task"
 )
 
 type TaskHandler struct {
-	Store *task.Store
+	TaskService *app.TaskService
 }
 
-func NewTaskHandler(store *task.Store) *TaskHandler {
-	return &TaskHandler{Store: store}
+func NewTaskHandler(TaskService *app.TaskService) *TaskHandler {
+	return &TaskHandler{TaskService: TaskService}
 }
 
 // CreateTask Method
 func (h *TaskHandler) CreateTask(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
 	var t task.Task
 	if err := json.NewDecoder(r.Body).Decode(&t); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	if err := h.Store.Create(&t); err != nil {
+	created, err := h.TaskService.CreateTask(ctx, &t)
+	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(t)
+	json.NewEncoder(w).Encode(created)
 }
 
 // ListTask Method
 func (h *TaskHandler) ListTasks(w http.ResponseWriter, r *http.Request) {
-	tasks, err := h.Store.List()
+	ctx := r.Context()
+	tasks, err := h.TaskService.ListTasks(ctx)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
 	json.NewEncoder(w).Encode(tasks)
 }
 
 // GetTask by id Method
 func (h *TaskHandler) GetTask(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
 	id := chi.URLParam(r, "id")
-	task, err := h.Store.Get(id)
+	task, err := h.TaskService.GetTask(ctx, id)
 	if err != nil {
-		http.Error(w, "task not found", http.StatusNotFound)
+		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
 	json.NewEncoder(w).Encode(task)
@@ -57,26 +61,29 @@ func (h *TaskHandler) GetTask(w http.ResponseWriter, r *http.Request) {
 
 // UpdateTask by id Method
 func (h *TaskHandler) UpdateTask(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
 	id := chi.URLParam(r, "id")
-	var input task.Task
-	if err := json.NewDecoder(r.Body).Decode(input); err != nil {
+	var t task.Task
+	if err := json.NewDecoder(r.Body).Decode(t); err != nil {
 		http.Error(w, "invalid body", http.StatusBadRequest)
 		return
 	}
 
-	input.ID = id
-	if err := h.Store.Update(&input); err != nil {
-		http.Error(w, "update failed", http.StatusInternalServerError)
+	t.ID = id
+	updated, err := h.TaskService.UpdateTask(ctx, &t)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	json.NewEncoder(w).Encode(input)
+	json.NewEncoder(w).Encode(updated)
 }
 
 // DeleteTask by id Method
 func (h *TaskHandler) DeleteTask(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
 	id := chi.URLParam(r, "id")
-	if err := h.Store.Delete(id); err != nil {
-		http.Error(w, "delete failed", http.StatusInternalServerError)
+	if err := h.TaskService.DeleteTask(ctx, id); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)

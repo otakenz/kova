@@ -2,28 +2,20 @@ package v1
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
 
 	"github.com/otakenz/kova/internal/core/task"
-	"github.com/otakenz/kova/internal/infra/db"
 )
 
-func setupTaskStore() *task.Store {
-	// TODO: mock the db implementing db with interface?
-	db, err := db.New(":memory:")
-	if err != nil {
-		log.Fatal("failed to open DB:", err)
-	}
+type MockTaskRepo struct {
+	tasks map[string]*task.Task
+}
 
-	taskStore := task.NewStore(db)
-	if err := taskStore.Init(); err != nil {
-		log.Fatal("failed to init task store:", err)
-	}
-	return taskStore
+func NewMockTaskRepo() *MockTaskRepo {
+	return &MockTaskRepo{tasks: make(map[string]*task.Task)}
 }
 
 func TestPingRoute(t *testing.T) {
@@ -50,19 +42,10 @@ func TestPingRoute(t *testing.T) {
 }
 
 func TestCreateTaskRoute(t *testing.T) {
-	db, err := db.New(":memory:")
-	if err != nil {
-		log.Fatal("failed to open DB:", err)
-	}
+	repo := NewMockTaskRepo()
+	handler := Routes(repo)
 
-	taskStore := task.NewStore(db)
-	if err := taskStore.Init(); err != nil {
-		t.Fatal(err)
-	}
-
-	handler := Routes(taskStore)
-
-	body := strings.NewReader(`{"title":"Test Task","status":"todo"}`)
+	body := strings.NewReader(`{"title":"Test Task","status":"todo","priority":"low"}`)
 	req, err := http.NewRequest("POST", "/tasks", body)
 	if err != nil {
 		t.Fatal(err)
@@ -80,31 +63,22 @@ func TestCreateTaskRoute(t *testing.T) {
 	if err := json.NewDecoder(rr.Body).Decode(&resp); err != nil {
 		t.Errorf("failed to decode response: %v", err)
 	}
-
 	if resp.Title != "Test Task" {
 		t.Errorf("expected title %q, got %q", "Test Task", resp.Title)
 	}
-
 	if resp.ID == "" {
 		t.Errorf("expected non-empty id")
 	}
-
 	if resp.Status != "todo" {
 		t.Errorf("expected status %q, got %q", "todo", resp.Status)
+	}
+	if resp.Priority != "low" {
+		t.Errorf("expected priority %q, got %q", "low", resp.Priority)
 	}
 }
 
 func TestListTasksRoute(t *testing.T) {
-	db, err := db.New(":memory:")
-	if err != nil {
-		log.Fatal("failed to open DB:", err)
-	}
-
-	taskStore := task.NewStore(db)
-	if err := taskStore.Init(); err != nil {
-		t.Fatal(err)
-	}
-
+	taskStore := setupTaskStore()
 	handler := Routes(taskStore)
 
 	req, err := http.NewRequest("GET", "/tasks", nil)

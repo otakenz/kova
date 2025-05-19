@@ -21,6 +21,19 @@
    - Data models CRUD operations
 ```
 
+## Data Flow (Tasks)
+
+```css
+[ HTTP Handler Layer ]
+         ↓
+[   Service Layer   ]  ← Business logic lives here
+         ↓
+[ Repository Layer ]  ← Interface to DB (SQLite, Postgres, mock, etc.)
+         ↓
+[   Infrastructure  ]  ← Actual database implementation
+
+```
+
 ## Data Models
 
 ### Task
@@ -31,6 +44,7 @@ type Task struct {
 	Title       string     `json:"title"`
 	Description string     `json:"description"`
 	Status      Status     `json:"status"`
+	Priority    Priority   `json:"priority"`
 	EstimateMin int        `json:"estimate_min"`
 	ActualMin   int        `json:"actual_min"`
 	AssignedTo  string     `json:"assigned_to"`
