@@ -12,23 +12,38 @@ import (
 	"github.com/otakenz/kova/api"
 	"github.com/otakenz/kova/internal/app"
 	"github.com/otakenz/kova/internal/infra/db"
+	"github.com/otakenz/kova/pkg/logger"
 )
 
 func main() {
+	// Initialize logger
+	if err := logger.Init(); err != nil {
+		log.Fatal("failed to initialize logger:", err)
+	}
+	defer logger.Sync()
+
+	logger.Sugar.Infow("Starting Kova server...")
+
+	// Initialize SQLite database
 	DB, err := db.New("kova.db")
 	if err != nil {
 		log.Fatal("failed to open DB:", err)
 	}
 
+	// Initialize Repository
 	ctx := context.Background()
 	taskRepo := db.NewTaskRepo(DB)
 	if err := taskRepo.Init(ctx); err != nil {
 		log.Fatal("failed to init task store:", err)
 	}
 
+	// Initialize Service
 	taskService := app.NewTaskService(taskRepo)
+
+	// Initialize API router
 	router := api.NewRouter(taskService)
 
+	// Initialize HTTP server
 	srv := &http.Server{
 		Addr:         ":8080",
 		Handler:      router,

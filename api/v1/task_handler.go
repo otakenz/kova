@@ -7,6 +7,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/otakenz/kova/internal/app"
 	"github.com/otakenz/kova/internal/core/task"
+	"github.com/otakenz/kova/pkg/logger"
 )
 
 type TaskHandler struct {
@@ -22,16 +23,19 @@ func (h *TaskHandler) CreateTask(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	var t task.Task
 	if err := json.NewDecoder(r.Body).Decode(&t); err != nil {
+		logger.Sugar.Errorw("failed to decode task", "error", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	created, err := h.TaskService.CreateTask(ctx, &t)
 	if err != nil {
+		logger.Sugar.Errorw("failed to create task", "error", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
+	logger.Sugar.Infow("task created", "id", created.ID, "title", created.Title)
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(created)
 }
@@ -41,9 +45,11 @@ func (h *TaskHandler) ListTasks(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	tasks, err := h.TaskService.ListTasks(ctx)
 	if err != nil {
+		logger.Sugar.Errorw("failed to list tasks", "error", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	logger.Sugar.Infow("tasks listed", "count", len(tasks))
 	json.NewEncoder(w).Encode(tasks)
 }
 
@@ -53,9 +59,11 @@ func (h *TaskHandler) GetTask(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	task, err := h.TaskService.GetTask(ctx, id)
 	if err != nil {
+		logger.Sugar.Errorw("failed to get task", "id", id, "error", err)
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
+	logger.Sugar.Infow("task retrieved", "id", task.ID, "title", task.Title)
 	json.NewEncoder(w).Encode(task)
 }
 
@@ -64,7 +72,8 @@ func (h *TaskHandler) UpdateTask(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	id := chi.URLParam(r, "id")
 	var t task.Task
-	if err := json.NewDecoder(r.Body).Decode(t); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&t); err != nil {
+		logger.Sugar.Errorw("failed to decode task", "error", err)
 		http.Error(w, "invalid body", http.StatusBadRequest)
 		return
 	}
@@ -72,9 +81,11 @@ func (h *TaskHandler) UpdateTask(w http.ResponseWriter, r *http.Request) {
 	t.ID = id
 	updated, err := h.TaskService.UpdateTask(ctx, &t)
 	if err != nil {
+		logger.Sugar.Errorw("failed to update task", "id", id, "error", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	logger.Sugar.Infow("task updated", "id", updated.ID, "title", updated.Title)
 	json.NewEncoder(w).Encode(updated)
 }
 
@@ -83,8 +94,10 @@ func (h *TaskHandler) DeleteTask(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	id := chi.URLParam(r, "id")
 	if err := h.TaskService.DeleteTask(ctx, id); err != nil {
+		logger.Sugar.Errorw("failed to delete task", "id", id, "error", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	logger.Sugar.Infow("task deleted", "id", id)
 	w.WriteHeader(http.StatusNoContent)
 }
