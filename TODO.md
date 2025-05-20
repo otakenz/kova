@@ -8,7 +8,7 @@
 - [/] Create project folder structure
 - [ ] Add core dependencies:
   - [/] `chi` for routing
-  - [ ] `sqlite3` driver
+  - [/] `sqlite3` driver
   - [/] `uuid` generator
   - [ ] Logging package (e.g., `slog`, `zap`, or `zerolog`)
   - [ ] `godotenv` for config (optional)
@@ -27,8 +27,8 @@
   - [ ] Calculate remaining time
   - [ ] Detect overdue tasks
 - [ ] Others:
-  - [ ] Implement Repository to abstract actual database impl
-  - [ ] Implement Service to encapsulate business logic, simplify TaskHandler
+  - [/] Implement Repository to abstract actual database impl
+  - [/] Implement Service to encapsulate business logic, simplify TaskHandler
 
 ---
 
@@ -50,8 +50,8 @@
 - [/] Define SQLite schema (`tasks`, `users`, `projects`)
 - [/] DB initialization logic
 - [ ] Create `TaskRepository` interface:
-  - [ ] `Create(task)`
-  - [ ] `Update(task)`
+  - [/] `Create(task)`
+  - [/] `Update(task)`
   - [ ] `ListByUser(userID)`
   - [ ] `GetActive(userID)`
 
@@ -75,7 +75,7 @@
 
 ## 🧪 Testing & Tooling
 
-- [ ] Unit tests for `core/task/` logic
+- [/] Unit tests for `core/task/` logic
 - [ ] Add `.env` or `config.yaml` support
 - [ ] Script: `scripts/dev.sh` to start server
 
@@ -83,8 +83,8 @@
 
 ## 🌱 Optional Polish
 
-- [ ] Add `README.md` with project goals and architecture
-- [ ] Add `LICENSE` (MIT)
+- [/] Add `README.md` with project goals and architecture
+- [/] Add `LICENSE` (MIT)
 - [ ] Scaffold OpenAPI (Swagger) definition
 
 ---

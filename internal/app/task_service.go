@@ -23,6 +23,10 @@ func (s *TaskService) CreateTask(ctx context.Context, t *task.Task) (*task.Task,
 	t.CreatedAt = time.Now()
 	t.UpdatedAt = t.CreatedAt
 
+	if err := t.Validate(); err != nil {
+		return nil, err
+	}
+
 	err := s.TaskRepo.Create(ctx, t)
 	if err != nil {
 		return nil, err
@@ -40,6 +44,10 @@ func (s *TaskService) GetTask(ctx context.Context, id string) (*task.Task, error
 
 func (s *TaskService) UpdateTask(ctx context.Context, t *task.Task) (*task.Task, error) {
 	t.UpdatedAt = time.Now()
+
+	if err := t.Validate(); err != nil {
+		return nil, err
+	}
 
 	err := s.TaskRepo.Update(ctx, t)
 	if err != nil {

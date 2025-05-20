@@ -9,17 +9,8 @@ import (
 
 func Routes(taskService *app.TaskService) http.Handler {
 	r := chi.NewRouter()
-	registerPingRoute(r)
 	registerTaskRoutes(r, taskService)
 	return r
-}
-
-func registerPingRoute(r chi.Router) {
-	// Register a GET route on "/ping"
-	r.Get("/ping", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"message":"pong"}`))
-	})
 }
 
 func registerTaskRoutes(r chi.Router, taskService *app.TaskService) {
