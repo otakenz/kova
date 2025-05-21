@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
@@ -42,10 +43,21 @@ func (s *TaskService) GetTask(ctx context.Context, id string) (*task.Task, error
 	return s.TaskRepo.Get(ctx, id)
 }
 
-func (s *TaskService) UpdateTask(ctx context.Context, t *task.Task) (*task.Task, error) {
+func (s *TaskService) UpdateTask(ctx context.Context, t *task.Task, trigger *task.Trigger) (*task.Task, error) {
+	if trigger != nil {
+		// Create FSM starting from current task status
+		fsm := task.NewStateMachine(t.Status)
+		// Fire the trigger to attempt transition
+		if err := fsm.Fire(string(*trigger)); err != nil {
+			return nil, fmt.Errorf("invalid state transition: %w", err)
+		}
+		// Update task status with FSM's new state
+		t.Status = task.Status(fsm.MustState().(string))
+	}
+
 	t.UpdatedAt = time.Now()
 
-	if err := t.Validate(); err != nil {
+	if err := t.ValidateTitle(t.Title); err != nil {
 		return nil, err
 	}
 

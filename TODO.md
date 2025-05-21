@@ -10,7 +10,7 @@
   - [/] `chi` for routing
   - [/] `sqlite3` driver
   - [/] `uuid` generator
-  - [ ] Logging package (e.g., `slog`, `zap`, or `zerolog`)
+  - [/] Logging package (e.g., `slog`, `zap`, or `zerolog`)
   - [ ] `godotenv` for config (optional)
 
 ---
@@ -23,7 +23,7 @@
   - `ID`, `Title`, `Status`, `EstimateMinutes`, `StartTime`, `EndTime`
 - [/] Create task status enum: `Todo`, `InProgress`, `Done`, `Aborted`
 - [ ] Implement core logic:
-  - [ ] Validate state transitions
+  - [/] Validate state transitions
   - [ ] Calculate remaining time
   - [ ] Detect overdue tasks
 - [ ] Others:

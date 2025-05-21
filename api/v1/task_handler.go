@@ -71,6 +71,8 @@ func (h *TaskHandler) GetTask(w http.ResponseWriter, r *http.Request) {
 func (h *TaskHandler) UpdateTask(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	id := chi.URLParam(r, "id")
+
+	// Decode the task payload from body
 	var t task.Task
 	if err := json.NewDecoder(r.Body).Decode(&t); err != nil {
 		logger.Sugar.Errorw("failed to decode task", "error", err)
@@ -78,8 +80,16 @@ func (h *TaskHandler) UpdateTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	triggerStr := r.URL.Query().Get("trigger")
+	trigger, err := task.ParseTrigger(triggerStr)
+	if err != nil {
+		logger.Sugar.Errorw("invalid trigger", "trigger", trigger, "error", err)
+		http.Error(w, "invalid trigger", http.StatusBadRequest)
+		return
+	}
+
 	t.ID = id
-	updated, err := h.TaskService.UpdateTask(ctx, &t)
+	updated, err := h.TaskService.UpdateTask(ctx, &t, &trigger)
 	if err != nil {
 		logger.Sugar.Errorw("failed to update task", "id", id, "error", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)

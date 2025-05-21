@@ -103,12 +103,11 @@ func TestTaskService_UpdateTask(t *testing.T) {
 		EstimateMin: 60,
 	}
 
-	// Happy path
 	mockRepo.UpdateFn = func(ctx context.Context, t *task.Task) error {
 		return nil
 	}
 
-	updatedTask, err := service.UpdateTask(context.Background(), taskToUpdate)
+	updatedTask, err := service.UpdateTask(context.Background(), taskToUpdate, nil)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -118,7 +117,7 @@ func TestTaskService_UpdateTask(t *testing.T) {
 
 	// Validation failure (empty title)
 	taskToUpdate.Title = ""
-	_, err = service.UpdateTask(context.Background(), taskToUpdate)
+	_, err = service.UpdateTask(context.Background(), taskToUpdate, nil)
 	if err == nil {
 		t.Error("expected validation error due to empty title")
 	}
@@ -128,7 +127,7 @@ func TestTaskService_UpdateTask(t *testing.T) {
 	mockRepo.UpdateFn = func(ctx context.Context, t *task.Task) error {
 		return errors.New("update failed")
 	}
-	_, err = service.UpdateTask(context.Background(), taskToUpdate)
+	_, err = service.UpdateTask(context.Background(), taskToUpdate, nil)
 	if err == nil || err.Error() != "update failed" {
 		t.Errorf("expected update failed error, got %v", err)
 	}

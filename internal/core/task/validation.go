@@ -20,7 +20,7 @@ var (
 
 // Validate checks whether the Task fields are valid according to business rules.
 func (t *Task) Validate() error {
-	if err := validateTitle(t.Title); err != nil {
+	if err := t.ValidateTitle(t.Title); err != nil {
 		return err
 	}
 	if err := validateStatus(t.Status); err != nil {
@@ -44,7 +44,7 @@ func (t *Task) Validate() error {
 	return nil
 }
 
-func validateTitle(title string) error {
+func (t *Task) ValidateTitle(title string) error {
 	if strings.TrimSpace(title) == "" {
 		return ErrEmptyTitle
 	}

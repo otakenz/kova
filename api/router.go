@@ -15,8 +15,8 @@ func NewRouter(taskService *app.TaskService) http.Handler {
 
 	// Global middleware
 	r.Use(middleware.Logging)
-	// r.Use(middleware.RequestID)
-	// r.Use(middleware.Recoverer)
+	r.Use(middleware.RequestID)
+	r.Use(middleware.Recoverer)
 
 	// Mount versioned API
 	r.Route("/api", func(r chi.Router) {
