@@ -5,7 +5,7 @@ import (
 
 	"github.com/otakenz/kova/api/middleware"
 	v1 "github.com/otakenz/kova/api/v1"
-	"github.com/otakenz/kova/internal/app"
+	app "github.com/otakenz/kova/internal/app/task"
 
 	"github.com/go-chi/chi/v5"
 )

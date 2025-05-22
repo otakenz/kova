@@ -1,4 +1,4 @@
-package app_test
+package task_test
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/otakenz/kova/internal/app"
+	apptask "github.com/otakenz/kova/internal/app/task"
 	"github.com/otakenz/kova/internal/core/task"
 )
 
@@ -40,7 +40,7 @@ func (m *mockTaskRepo) Delete(ctx context.Context, id string) error {
 
 func TestTaskService_CreateTask(t *testing.T) {
 	mockRepo := &mockTaskRepo{}
-	service := app.NewTaskService(mockRepo)
+	service := apptask.NewTaskService(mockRepo)
 
 	validTask := &task.Task{
 		Title:       "Test Task",
@@ -91,7 +91,7 @@ func TestTaskService_CreateTask(t *testing.T) {
 
 func TestTaskService_UpdateTask(t *testing.T) {
 	mockRepo := &mockTaskRepo{}
-	service := app.NewTaskService(mockRepo)
+	service := apptask.NewTaskService(mockRepo)
 
 	taskToUpdate := &task.Task{
 		ID:          "123",

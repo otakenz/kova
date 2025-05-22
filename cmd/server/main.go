@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/otakenz/kova/api"
-	"github.com/otakenz/kova/internal/app"
+	"github.com/otakenz/kova/internal/app/task"
 	"github.com/otakenz/kova/internal/infra/db"
 	"github.com/otakenz/kova/pkg/logger"
 )
@@ -38,7 +38,7 @@ func main() {
 	}
 
 	// Initialize Service
-	taskService := app.NewTaskService(taskRepo)
+	taskService := task.NewTaskService(taskRepo)
 
 	// Initialize API router
 	router := api.NewRouter(taskService)

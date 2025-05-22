@@ -5,16 +5,16 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/otakenz/kova/internal/app"
+	apptask "github.com/otakenz/kova/internal/app/task"
 	"github.com/otakenz/kova/internal/core/task"
 	"github.com/otakenz/kova/pkg/logger"
 )
 
 type TaskHandler struct {
-	TaskService *app.TaskService
+	TaskService *apptask.TaskService
 }
 
-func NewTaskHandler(TaskService *app.TaskService) *TaskHandler {
+func NewTaskHandler(TaskService *apptask.TaskService) *TaskHandler {
 	return &TaskHandler{TaskService: TaskService}
 }
 
