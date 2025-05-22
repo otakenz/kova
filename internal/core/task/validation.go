@@ -3,7 +3,6 @@ package task
 import (
 	"errors"
 	"strings"
-	"time"
 )
 
 var (
@@ -20,42 +19,42 @@ var (
 
 // Validate checks whether the Task fields are valid according to business rules.
 func (t *Task) Validate() error {
-	if err := t.ValidateTitle(t.Title); err != nil {
+	if err := t.ValidateTitle(); err != nil {
 		return err
 	}
-	if err := validateStatus(t.Status); err != nil {
+	if err := t.ValidateStatus(); err != nil {
 		return err
 	}
-	if err := validatePriority(t.Priority); err != nil {
+	if err := t.ValidatePriority(); err != nil {
 		return err
 	}
-	if err := validateEstimate(t.EstimateMin); err != nil {
+	if err := t.ValidateEstimate(); err != nil {
 		return err
 	}
-	if err := validateActual(t.ActualMin); err != nil {
+	if err := t.ValidateActual(); err != nil {
 		return err
 	}
-	if err := validateCompletion(t); err != nil {
+	if err := t.ValidateCompletion(); err != nil {
 		return err
 	}
-	if err := validateTimestamps(t.CreatedAt, t.UpdatedAt); err != nil {
+	if err := t.ValidateTimestamps(); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (t *Task) ValidateTitle(title string) error {
-	if strings.TrimSpace(title) == "" {
+func (t *Task) ValidateTitle() error {
+	if strings.TrimSpace(t.Title) == "" {
 		return ErrEmptyTitle
 	}
-	if len(title) > 255 {
+	if len(t.Title) > 255 {
 		return ErrTitleTooLong
 	}
 	return nil
 }
 
-func validateStatus(s Status) error {
-	switch s {
+func (t *Task) ValidateStatus() error {
+	switch t.Status {
 	case Todo, InProgress, Done, Aborted:
 		return nil
 	default:
@@ -63,8 +62,8 @@ func validateStatus(s Status) error {
 	}
 }
 
-func validatePriority(p Priority) error {
-	switch p {
+func (t *Task) ValidatePriority() error {
+	switch t.Priority {
 	case Low, Medium, High:
 		return nil
 	default:
@@ -72,21 +71,21 @@ func validatePriority(p Priority) error {
 	}
 }
 
-func validateEstimate(estimate int) error {
-	if estimate < 0 {
+func (t *Task) ValidateEstimate() error {
+	if t.EstimateMin < 0 {
 		return ErrNegativeEstimate
 	}
 	return nil
 }
 
-func validateActual(actual int) error {
-	if actual < 0 {
+func (t *Task) ValidateActual() error {
+	if t.ActualMin < 0 {
 		return ErrNegativeActual
 	}
 	return nil
 }
 
-func validateCompletion(t *Task) error {
+func (t *Task) ValidateCompletion() error {
 	if t.CompletedAt != nil && t.Status != Done {
 		return ErrCompletedAtWithoutDoneStatus
 	}
@@ -96,11 +95,11 @@ func validateCompletion(t *Task) error {
 	return nil
 }
 
-func validateTimestamps(created, updated time.Time) error {
-	if created.IsZero() || updated.IsZero() {
+func (t *Task) ValidateTimestamps() error {
+	if t.CreatedAt.IsZero() || t.UpdatedAt.IsZero() {
 		return errors.New("created_at and updated_at must be set")
 	}
-	if updated.Before(created) {
+	if t.UpdatedAt.Before(t.CreatedAt) {
 		return errors.New("updated_at cannot be before created_at")
 	}
 	return nil

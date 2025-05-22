@@ -57,7 +57,11 @@ func (s *TaskService) UpdateTask(ctx context.Context, t *task.Task, trigger *tas
 
 	t.UpdatedAt = time.Now()
 
-	if err := t.ValidateTitle(t.Title); err != nil {
+	if err := t.ValidateTitle(); err != nil {
+		return nil, err
+	}
+
+	if err := t.ValidateEstimate(); err != nil {
 		return nil, err
 	}
 
