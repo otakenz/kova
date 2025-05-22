@@ -22,10 +22,10 @@
 - [/] Define `Task` struct:
   - `ID`, `Title`, `Status`, `EstimateMinutes`, `StartTime`, `EndTime`
 - [/] Create task status enum: `Todo`, `InProgress`, `Done`, `Aborted`
-- [ ] Implement core logic:
+- [/] Implement core logic:
   - [/] Validate state transitions
-  - [ ] Calculate remaining time
-  - [ ] Detect overdue tasks
+  - [/] Calculate remaining time
+  - [/] Detect overdue tasks
 - [/] Others:
   - [/] Implement Repository to abstract actual database impl
   - [/] Implement Service to encapsulate business logic, simplify TaskHandler
@@ -37,7 +37,7 @@
 ### `internal/app/task/`
 
 - [ ] Implement use cases:
-  - [ ] `StartTask(taskID, estimateMins)`
+  - [/] `StartTask(taskID, estimateMins)`
   - [ ] `CompleteTask(taskID)`
   - [ ] `GetActiveTasks(userID)`
 
@@ -63,7 +63,7 @@
 
 - [ ] Define API routes:
   - [/] `POST   /v1/tasks` → Create new task
-  - [ ] `POST   /v1/tasks/:id/start` → Start task with time estimate
+  - [/] `POST   /v1/tasks/:id/start` → Start task with time estimate
   - [ ] `POST   /v1/tasks/:id/complete` → Mark task complete
   - [ ] `GET    /v1/tasks/active` → Fetch running tasks and countdown
 - [ ] Setup middleware:

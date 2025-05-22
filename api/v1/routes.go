@@ -24,5 +24,6 @@ func registerTaskRoutes(r chi.Router, taskService *task.TaskService) {
 		r.Get("/{id}", taskHandler.GetTask)
 		r.Put("/{id}", taskHandler.UpdateTask)
 		r.Delete("/{id}", taskHandler.DeleteTask)
+		r.Post("/{id}/start", taskHandler.StartTask)
 	})
 }

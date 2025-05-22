@@ -111,3 +111,17 @@ func (h *TaskHandler) DeleteTask(w http.ResponseWriter, r *http.Request) {
 	logger.Sugar.Infow("task deleted", "id", id)
 	w.WriteHeader(http.StatusNoContent)
 }
+
+// StartTask
+func (h *TaskHandler) StartTask(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	id := chi.URLParam(r, "id")
+	task, err := h.TaskService.StartTask(ctx, id)
+	if err != nil {
+		logger.Sugar.Errorw("failed to start task", "id", id, "error", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	logger.Sugar.Infow("task started", "id", task.ID, "title", task.Title)
+	json.NewEncoder(w).Encode(task)
+}

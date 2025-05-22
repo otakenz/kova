@@ -20,9 +20,14 @@ func NewTaskService(TaskRepo ports.TaskRepository) *TaskService {
 
 func (s *TaskService) CreateTask(ctx context.Context, t *task.Task) (*task.Task, error) {
 	t.ID = uuid.NewString()
+	t.Status = task.Todo
 	t.ActualMin = 0
 	t.CreatedAt = time.Now()
 	t.UpdatedAt = t.CreatedAt
+
+	if t.Priority == "" {
+		t.Priority = task.Low
+	}
 
 	if err := t.Validate(); err != nil {
 		return nil, err
@@ -74,4 +79,26 @@ func (s *TaskService) UpdateTask(ctx context.Context, t *task.Task, trigger *tas
 
 func (s *TaskService) DeleteTask(ctx context.Context, id string) error {
 	return s.TaskRepo.Delete(ctx, id)
+}
+
+func (s *TaskService) StartTask(ctx context.Context, id string) (*task.Task, error) {
+	t, err := s.GetTask(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	if t.Status != task.Todo {
+		return nil, fmt.Errorf("task is not in a state that can be started")
+	}
+
+	t.Status = task.InProgress
+	now := time.Now()
+	t.UpdatedAt = now
+	t.StartedAt = &now
+
+	err = s.TaskRepo.Update(ctx, t)
+	if err != nil {
+		return nil, err
+	}
+	return t, nil
 }

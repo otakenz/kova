@@ -48,6 +48,7 @@ type Task struct {
 	EstimateMin int        `json:"estimate_min"`
 	ActualMin   int        `json:"actual_min"`
 	AssignedTo  string     `json:"assigned_to"`
+	StartedAt   *time.Time `json:"started_at"`
 	CreatedAt   time.Time  `json:"created_at"`
 	UpdatedAt   time.Time  `json:"updated_at"`
 	CompletedAt time.Time `json:"completed_at"`

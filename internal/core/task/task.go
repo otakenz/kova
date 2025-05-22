@@ -33,7 +33,28 @@ type Task struct {
 	EstimateMin int        `json:"estimate_min"`
 	ActualMin   int        `json:"actual_min"`
 	AssignedTo  *string    `json:"assigned_to"`
+	StartedAt   *time.Time `json:"started_at"`
 	CreatedAt   time.Time  `json:"created_at"`
 	UpdatedAt   time.Time  `json:"updated_at"`
 	CompletedAt *time.Time `json:"completed_at"`
+}
+
+func (t *Task) RemainingMin() int {
+	return t.EstimateMin - t.ActualMin
+}
+
+func (t *Task) RemainingNow() int {
+	if t.Status != InProgress || t.StartedAt.IsZero() {
+		return t.RemainingMin()
+	}
+	elapsed := int(time.Since(*t.StartedAt).Minutes())
+	return t.RemainingMin() - elapsed
+}
+
+func (t *Task) IsOverdue() bool {
+	if t.Status != InProgress {
+		return false
+	}
+	elapsed := time.Since(*t.StartedAt).Minutes()
+	return elapsed > float64(t.EstimateMin)
 }
